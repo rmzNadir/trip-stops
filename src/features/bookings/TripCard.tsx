@@ -38,15 +38,16 @@ const TripCard = memo(({ item, lines }: TripCardProps) => {
       overflow='hidden'
       mx='4'>
       <HStack>
-        <Image
-          bg='muted.50'
-          size='lg'
-          resizeMode='contain'
-          source={{
-            uri: lineLogoUrl,
-          }}
-          alt={`${line_id} line logo`}
-        />
+        <Center bg='muted.50'>
+          <Image
+            size='lg'
+            resizeMode='contain'
+            source={{
+              uri: lineLogoUrl,
+            }}
+            alt={`${line_id} line logo`}
+          />
+        </Center>
         <VStack px='4' p='2' space='2' flex='1'>
           <HStack space='2' alignItems='flex-end'>
             <Heading size='md'>{currencyFormatter(total)}</Heading>

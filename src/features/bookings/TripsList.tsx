@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
+  Center,
   FlatList,
   Heading,
+  HStack,
+  IconButton,
   useColorModeValue,
   useTheme,
   VStack,
@@ -13,29 +16,53 @@ import {
   Pressable,
   RefreshControl,
 } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Terminal, Trip, TripsListsScreenProps } from '../../types';
 import { useLazyGetTripsQuery, useSearchTripsMutation } from '../api/apiSlice';
 import TripCard from './TripCard';
 
 interface ListHeaderComponentProps {
   terminals: Terminal[];
+  navigation: TripsListsScreenProps['navigation'];
 }
 
-const ListHeaderComponent = ({ terminals }: ListHeaderComponentProps) => {
+const ListHeaderComponent = ({
+  terminals,
+  navigation,
+}: ListHeaderComponentProps) => {
+  const canGoback = navigation.canGoBack();
+
   return (
     <VStack
-      space='2'
-      pt='2'
-      pb='4'
-      px='4'
+      space='4'
+      p='4'
       _dark={{ bg: 'muted.900' }}
       _light={{ bg: 'muted.50' }}>
-      <Heading color='primary.500' size='xl'>
-        Available trips
-      </Heading>
-      <Heading color='primary.500' size='md'>
-        {!!terminals.length && `${terminals[0].name} - ${terminals[1].name}`}
-      </Heading>
+      <HStack space='2' justifyContent='space-between' alignItems='center'>
+        {canGoback && (
+          <Box>
+            <IconButton
+              onPress={() => navigation.goBack()}
+              variant='solid'
+              size='sm'
+              _icon={{
+                as: AntDesign,
+                name: 'arrowleft',
+              }}
+            />
+          </Box>
+        )}
+        <Box flex='1' alignItems={canGoback ? 'center' : 'flex-start'}>
+          <Heading color='primary.500' size='lg'>
+            Available trips
+          </Heading>
+        </Box>
+      </HStack>
+      <Center>
+        <Heading color='primary.500' size='md'>
+          {!!terminals.length && `${terminals[0].name} - ${terminals[1].name}`}
+        </Heading>
+      </Center>
     </VStack>
   );
 };
@@ -93,7 +120,9 @@ const TripsList = ({ navigation, route }: TripsListsScreenProps) => {
     <Box flex='1' _dark={{ bg: 'muted.900' }} _light={{ bg: 'muted.50' }}>
       <FlatList
         keyboardShouldPersistTaps='handled'
-        ListHeaderComponent={<ListHeaderComponent terminals={terminals} />}
+        ListHeaderComponent={
+          <ListHeaderComponent terminals={terminals} navigation={navigation} />
+        }
         refreshControl={
           <RefreshControl
             colors={[colors.primary[400], colors.primary[500]]}

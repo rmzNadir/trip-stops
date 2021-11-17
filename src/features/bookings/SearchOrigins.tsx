@@ -11,6 +11,7 @@ import {
   useTheme,
   VStack,
   FlatList,
+  HStack,
 } from 'native-base';
 import {
   Keyboard,
@@ -18,6 +19,7 @@ import {
   RefreshControl,
   Pressable,
 } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { useDebounce } from '../../app/useDebounce';
 import { SearchOriginsScreenProps } from '../../types';
@@ -28,23 +30,42 @@ import PlaceCard from './PlaceCard';
 interface ListHeaderComponentProps {
   search: string;
   setSearch: Dispatch<SetStateAction<string>>;
+  navigation: SearchOriginsScreenProps['navigation'];
 }
 
 const ListHeaderComponent = ({
   search,
   setSearch,
+  navigation,
 }: ListHeaderComponentProps) => {
+  const canGoback = navigation.canGoBack();
+
   return (
     <VStack
-      space='2'
-      pt='2'
-      pb='4'
-      px='4'
+      space='4'
+      p='4'
       _dark={{ bg: 'muted.900' }}
       _light={{ bg: 'muted.50' }}>
-      <Heading color='primary.500' size='xl' mb='6'>
-        Where are you leaving from?
-      </Heading>
+      <HStack space='2' justifyContent='space-between' alignItems='center'>
+        {canGoback && (
+          <Box>
+            <IconButton
+              onPress={() => navigation.goBack()}
+              variant='solid'
+              size='sm'
+              _icon={{
+                as: AntDesign,
+                name: 'arrowleft',
+              }}
+            />
+          </Box>
+        )}
+        <Box flex='1' alignItems={canGoback ? 'center' : 'flex-start'}>
+          <Heading color='primary.500' size='lg'>
+            Where are you leaving from?
+          </Heading>
+        </Box>
+      </HStack>
 
       <InputGroup borderRightRadius={!search ? '4' : undefined} height='12'>
         <Input
@@ -111,7 +132,11 @@ const SearchOrigins = ({ navigation }: SearchOriginsScreenProps) => {
       <FlatList
         keyboardShouldPersistTaps='handled'
         ListHeaderComponent={
-          <ListHeaderComponent search={search} setSearch={setSearch} />
+          <ListHeaderComponent
+            search={search}
+            setSearch={setSearch}
+            navigation={navigation}
+          />
         }
         refreshControl={
           <RefreshControl
@@ -124,7 +149,6 @@ const SearchOrigins = ({ navigation }: SearchOriginsScreenProps) => {
             onRefresh={() => refetch()}
           />
         }
-        extraData={{ search, setSearch }}
         stickyHeaderIndices={[0]}
         removeClippedSubviews
         onScrollBeginDrag={Keyboard.dismiss}

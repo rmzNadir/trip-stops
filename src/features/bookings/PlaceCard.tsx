@@ -20,7 +20,9 @@ const PlaceCard = memo(({ item }: PlaceCardProps) => {
       mx='4'>
       <HStack space='2' alignItems='center' justifyContent='space-between'>
         <VStack space='2' p='4'>
-          <Heading size='md'>{display}</Heading>
+          <Heading size='sm' fontSize='md'>
+            {display}
+          </Heading>
 
           <Flex
             flexDirection='row'
