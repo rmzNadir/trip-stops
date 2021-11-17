@@ -1,8 +1,11 @@
 import React from 'react';
 import { Box, Heading, Text } from 'native-base';
+import reactotron from 'reactotron-react-native';
 import { DepartDateScreenProps } from '../../types';
 
 const DepartDate = ({ navigation, route }: DepartDateScreenProps) => {
+  reactotron.log!(route.params);
+
   return (
     <Box
       flex='1'

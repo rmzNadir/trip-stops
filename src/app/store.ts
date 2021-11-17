@@ -1,10 +1,12 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import Reactotron from '../../ReactotronConfig';
 import { apiSlice } from '../features/api/apiSlice';
 
 export const store = configureStore({
   reducer: {
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
+  enhancers: [Reactotron.createEnhancer!()],
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),
 });

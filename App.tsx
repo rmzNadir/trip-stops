@@ -7,6 +7,10 @@ import { extendedTheme } from './src/app/extendedTheme';
 import { store } from './src/app/store';
 import Routes from './src/routes';
 
+if (__DEV__) {
+  import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
+}
+
 const App = () => {
   return (
     <NavigationContainer>
