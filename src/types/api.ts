@@ -35,20 +35,16 @@ export interface Bus {
   stats: Stats;
 }
 
-export interface Stats2 {}
-
 export interface Rides {
   active: boolean;
-  stats: Stats2;
+  stats: Stats;
 }
-
-export interface Stats3 {}
 
 export interface Flights {
   active: boolean;
   carrier_ids: number[];
   airport_ids: number[];
-  stats: Stats3;
+  stats: Stats;
 }
 
 export interface Mix {
@@ -90,7 +86,7 @@ export interface Coordinates {
   long: number;
 }
 
-export interface TCiudadDeMexicoCentralNorte {
+export interface Terminal {
   id: string;
   name: string;
   city_id: string;
@@ -100,27 +96,7 @@ export interface TCiudadDeMexicoCentralNorte {
   code: string;
 }
 
-export interface Coordinates2 {
-  lat: number;
-  long: number;
-}
-
-export interface TGuadalajaraCentralNueva {
-  id: string;
-  name: string;
-  city_id: string;
-  city_name: string;
-  coordinates: Coordinates2;
-  state_name: string;
-  code: string;
-}
-
-export interface Terminals {
-  't-ciudad-de-mexico-central-norte': TCiudadDeMexicoCentralNorte;
-  't-guadalajara-central-nueva': TGuadalajaraCentralNueva;
-}
-
-export interface EtnLujo {
+export interface Line {
   name: string;
   abbr: string;
   human_abbr: string;
@@ -139,61 +115,21 @@ export interface EtnLujo {
   redirection_info?: string;
   commission_estimate: string;
 }
-
-export interface TuristarLujo {
-  name: string;
-  abbr: string;
-  human_abbr: string;
-  transporter_name: string;
-  allows_seat_selection: boolean;
-  volatile_pricing: boolean;
-  average_ratings: number;
-  last_ratings: number[];
-  total_ratings: number;
-  services: string[];
-  service_type: string;
-  logo_url: string;
-  copyright_protected: boolean;
-  ally: boolean;
-  ticket_counter_exchange: boolean;
-  redirection_info?: string;
-  commission_estimate: string;
-}
-
-export interface Lines {
-  'etn-lujo': EtnLujo;
-  'turistar-lujo': TuristarLujo;
-}
-
-export interface CiudadDeMexico {
+export interface City {
   id: string;
   name: string;
   state: string;
   state_abbr: string;
   country: string;
   country_abbr: string;
-}
-
-export interface Guadalajara {
-  id: string;
-  name: string;
-  state: string;
-  state_abbr: string;
-  country: string;
-  country_abbr: string;
-}
-
-export interface Cities {
-  'ciudad-de-mexico': CiudadDeMexico;
-  guadalajara: Guadalajara;
 }
 
 export interface TripsSearch {
   search: Search;
   config: Config;
-  terminals: Terminals;
-  lines: Lines;
-  cities: Cities;
+  terminals: Record<string, Terminal>;
+  lines: Record<string, Line>;
+  cities: Record<string, City>;
 }
 
 export interface Carriers {}
@@ -349,8 +285,8 @@ export interface TripsInfo {
   carriers: Carriers;
   airports: Airports;
   fare_services: FareServices;
-  lines: Lines;
-  terminals: Terminals;
+  lines: Record<string, Line>;
+  terminals: Record<string, Terminal>;
   inner_city_connections: InnerCityConnections;
   transport_type: string;
   trips: Trip[];
