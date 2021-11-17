@@ -76,6 +76,10 @@ const ListHeaderComponent = ({
   );
 };
 
+const ItemSeparatorComponent = () => <Box height='3' />;
+
+const ListFooterComponent = () => <Box height='6' />;
+
 const SearchDestinations = ({
   navigation,
   route,
@@ -108,10 +112,6 @@ const SearchDestinations = ({
     ),
     [navigation, route],
   );
-
-  const ItemSeparatorComponent = useCallback(() => <Box height='2' />, []);
-
-  const ListFooterComponent = useCallback(() => <Box height='6' />, []);
 
   return (
     <Box flex='1' _dark={{ bg: 'muted.900' }} _light={{ bg: 'muted.50' }}>

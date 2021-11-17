@@ -1,5 +1,16 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { MaterialBottomTabScreenProps } from '@react-navigation/material-bottom-tabs';
+import { StackScreenProps } from '@react-navigation/stack';
+
+export type RootBottomTabsParams = {
+  SearchTrips: SearchTripsScreenProps;
+  Settings: undefined;
+};
+
+export type SearchTripsScreenProps = MaterialBottomTabScreenProps<
+  RootBottomTabsParams,
+  'SearchTrips'
+>;
 
 export interface SearchDestinationProps {
   origin: string;
@@ -21,27 +32,27 @@ export type RootStackParamList = {
   TripsList: TripListsProps;
 };
 
-export type TripDetailsScreenProps = NativeStackScreenProps<
+export type TripDetailsScreenProps = StackScreenProps<
   RootStackParamList,
   'TripDetails'
 >;
 
-export type SearchOriginsScreenProps = NativeStackScreenProps<
+export type SearchOriginsScreenProps = StackScreenProps<
   RootStackParamList,
   'SearchOrigins'
 >;
 
-export type SearchDestinationsScreenProps = NativeStackScreenProps<
+export type SearchDestinationsScreenProps = StackScreenProps<
   RootStackParamList,
   'SearchDestinations'
 >;
 
-export type DepartDateScreenProps = NativeStackScreenProps<
+export type DepartDateScreenProps = StackScreenProps<
   RootStackParamList,
   'DepartDate'
 >;
 
-export type TripsListsScreenProps = NativeStackScreenProps<
+export type TripsListsScreenProps = StackScreenProps<
   RootStackParamList,
   'TripsList'
 >;

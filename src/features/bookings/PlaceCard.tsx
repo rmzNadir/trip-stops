@@ -67,6 +67,7 @@ const PlaceCard = memo(({ item }: PlaceCardProps) => {
             name='chevron-right'
             textAlign='center'
             borderLeftRadius='0'
+            color='white'
           />
         </Box>
       </HStack>

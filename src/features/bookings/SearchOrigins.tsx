@@ -76,16 +76,20 @@ const ListHeaderComponent = ({
   );
 };
 
+const ItemSeparatorComponent = () => <Box height='3' />;
+
+const ListFooterComponent = () => <Box height='6' />;
+
 const SearchOrigins = ({ navigation }: SearchOriginsScreenProps) => {
   const { colors } = useTheme();
   const [search, setSearch] = useState<string>('');
-  const debouncedSearch = useDebounce(search, 250);
+  const debouncedSearch = useDebounce(search, 250) as string;
   const {
     data: places,
     refetch,
     isFetching,
   } = useGetPlacesQuery({
-    q: search ? (debouncedSearch as string) : undefined,
+    q: search ? debouncedSearch : undefined,
   });
 
   const keyExtractor = useCallback((place: Place) => place.id.toString(), []);
@@ -101,10 +105,6 @@ const SearchOrigins = ({ navigation }: SearchOriginsScreenProps) => {
     ),
     [navigation],
   );
-
-  const ItemSeparatorComponent = useCallback(() => <Box height='2' />, []);
-
-  const ListFooterComponent = useCallback(() => <Box height='6' />, []);
 
   return (
     <Box flex='1' _dark={{ bg: 'muted.900' }} _light={{ bg: 'muted.50' }}>
@@ -124,6 +124,7 @@ const SearchOrigins = ({ navigation }: SearchOriginsScreenProps) => {
             onRefresh={() => refetch()}
           />
         }
+        extraData={{ search, setSearch }}
         stickyHeaderIndices={[0]}
         removeClippedSubviews
         onScrollBeginDrag={Keyboard.dismiss}
