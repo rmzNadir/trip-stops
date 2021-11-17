@@ -1,3 +1,5 @@
+import { TripListsProps } from './index';
+
 export interface Place {
   id: number;
   slug: string;
@@ -17,4 +19,339 @@ export interface Place {
 export interface GetPlacesParams {
   q?: string;
   from?: string;
+}
+
+export type SearchTripsBody = Pick<
+  TripListsProps,
+  'date' | 'destination' | 'origin'
+>;
+
+export interface Stats {}
+
+export interface Bus {
+  active: boolean;
+  terminal_ids: string[];
+  line_ids: string[];
+  stats: Stats;
+}
+
+export interface Stats2 {}
+
+export interface Rides {
+  active: boolean;
+  stats: Stats2;
+}
+
+export interface Stats3 {}
+
+export interface Flights {
+  active: boolean;
+  carrier_ids: number[];
+  airport_ids: number[];
+  stats: Stats3;
+}
+
+export interface Mix {
+  active: boolean;
+}
+
+export interface TypeOfTransport {
+  bus: Bus;
+  rides: Rides;
+  flights: Flights;
+  mix: Mix;
+}
+
+export interface Search {
+  parent_search_id: number;
+  id: number;
+  departs: string;
+  origin_id: string;
+  destination_id: string;
+  international: boolean;
+  type_of_transport: TypeOfTransport;
+  created_at: Date;
+}
+
+export interface PaymentPlans {
+  3: number;
+  6: number;
+  9: number;
+  12: number;
+}
+
+export interface Config {
+  installments_min_amount: number;
+  payment_plans: PaymentPlans;
+}
+
+export interface Coordinates {
+  lat: number;
+  long: number;
+}
+
+export interface TCiudadDeMexicoCentralNorte {
+  id: string;
+  name: string;
+  city_id: string;
+  city_name: string;
+  coordinates: Coordinates;
+  state_name: string;
+  code: string;
+}
+
+export interface Coordinates2 {
+  lat: number;
+  long: number;
+}
+
+export interface TGuadalajaraCentralNueva {
+  id: string;
+  name: string;
+  city_id: string;
+  city_name: string;
+  coordinates: Coordinates2;
+  state_name: string;
+  code: string;
+}
+
+export interface Terminals {
+  't-ciudad-de-mexico-central-norte': TCiudadDeMexicoCentralNorte;
+  't-guadalajara-central-nueva': TGuadalajaraCentralNueva;
+}
+
+export interface EtnLujo {
+  name: string;
+  abbr: string;
+  human_abbr: string;
+  transporter_name: string;
+  allows_seat_selection: boolean;
+  volatile_pricing: boolean;
+  average_ratings: number;
+  last_ratings: number[];
+  total_ratings: number;
+  services: string[];
+  service_type: string;
+  logo_url: string;
+  copyright_protected: boolean;
+  ally: boolean;
+  ticket_counter_exchange: boolean;
+  redirection_info?: string;
+  commission_estimate: string;
+}
+
+export interface TuristarLujo {
+  name: string;
+  abbr: string;
+  human_abbr: string;
+  transporter_name: string;
+  allows_seat_selection: boolean;
+  volatile_pricing: boolean;
+  average_ratings: number;
+  last_ratings: number[];
+  total_ratings: number;
+  services: string[];
+  service_type: string;
+  logo_url: string;
+  copyright_protected: boolean;
+  ally: boolean;
+  ticket_counter_exchange: boolean;
+  redirection_info?: string;
+  commission_estimate: string;
+}
+
+export interface Lines {
+  'etn-lujo': EtnLujo;
+  'turistar-lujo': TuristarLujo;
+}
+
+export interface CiudadDeMexico {
+  id: string;
+  name: string;
+  state: string;
+  state_abbr: string;
+  country: string;
+  country_abbr: string;
+}
+
+export interface Guadalajara {
+  id: string;
+  name: string;
+  state: string;
+  state_abbr: string;
+  country: string;
+  country_abbr: string;
+}
+
+export interface Cities {
+  'ciudad-de-mexico': CiudadDeMexico;
+  guadalajara: Guadalajara;
+}
+
+export interface TripsSearch {
+  search: Search;
+  config: Config;
+  terminals: Terminals;
+  lines: Lines;
+  cities: Cities;
+}
+
+export interface Carriers {}
+
+export interface Airports {}
+
+export interface FareServices {}
+
+export interface InnerCityConnections {}
+
+export interface ProviderDiscount {
+  amount: number;
+}
+
+export interface ProviderDiscount2 {
+  id: string;
+  name: string;
+  priority?: number;
+  availability: number;
+  amount: number;
+  taxes: number;
+  total: number;
+}
+
+export interface Pricing {
+  amount: number;
+  taxes: number;
+  total: number;
+  discount_type: string;
+  discount_availability?: boolean;
+  provider_discount: ProviderDiscount;
+  total_before_discount: number;
+  provider_discounts: ProviderDiscount2[];
+}
+
+export interface ProviderDiscount3 {
+  amount: number;
+}
+
+export interface ProviderDiscount4 {
+  id: string;
+  name: string;
+  priority?: number;
+  availability: number;
+  amount: number;
+  taxes: number;
+  total: number;
+}
+
+export interface RoundTripPricing {
+  amount: number;
+  taxes: number;
+  total: number;
+  discount_type: string;
+  discount_availability?: boolean;
+  provider_discount: ProviderDiscount3;
+  total_before_discount: number;
+  provider_discounts: ProviderDiscount4[];
+}
+
+export interface PassengerType {
+  type: string;
+  availability: number;
+  total: number;
+  priority: number;
+}
+
+export interface Stop {
+  terminal: string;
+  departure: Date;
+  arrival: Date;
+}
+
+export interface Path {
+  schedule?: string;
+  provider: string;
+  origin: string;
+  destination: string;
+  departure: Date;
+  arrival: Date;
+  stops: Stop[];
+}
+
+export interface ProviderDiscount5 {
+  amount: number;
+}
+
+export interface ProviderDiscount6 {
+  id: string;
+  name: string;
+  priority?: number;
+  availability: number;
+  amount: number;
+  taxes: number;
+  total: number;
+}
+
+export interface DepartureRoundTripPricing {
+  amount: number;
+  taxes: number;
+  total: number;
+  discount_type: string;
+  discount_availability?: boolean;
+  provider_discount: ProviderDiscount5;
+  total_before_discount: number;
+  provider_discounts: ProviderDiscount6[];
+}
+
+export interface Trip {
+  id: string;
+  origin_id: string;
+  destination_id: string;
+  origin_code: string;
+  destination_code: string;
+  pricing: Pricing;
+  round_trip_pricing: RoundTripPricing;
+  departure: Date;
+  arrival: Date;
+  availability: number;
+  capacity: number;
+  service: string;
+  line_id: string;
+  stops: number;
+  passenger_types: PassengerType[];
+  travel_agency: string;
+  travel_agency_type: string;
+  process_type: string;
+  is_buyable: boolean;
+  product_id: string;
+  transport_type: string;
+  duration: number;
+  path: Path[];
+  has_route_details: boolean;
+  variable_departure_time: boolean;
+  open_ticket: boolean;
+  on_demand: boolean;
+  on_demand_caption?: boolean;
+  on_demand_legal?: boolean;
+  on_demand_seats?: boolean;
+  second_floor: boolean;
+  departure_round_trip_pricing: DepartureRoundTripPricing;
+  allows_seat_selection: boolean;
+}
+
+export interface TripsInfo {
+  id: number;
+  state: string;
+  origin_id: number;
+  destination_id: number;
+  departs: string;
+  created_at: Date;
+  finished_at: Date;
+  carriers: Carriers;
+  airports: Airports;
+  fare_services: FareServices;
+  lines: Lines;
+  terminals: Terminals;
+  inner_city_connections: InnerCityConnections;
+  transport_type: string;
+  trips: Trip[];
 }

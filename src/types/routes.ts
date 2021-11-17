@@ -5,9 +5,12 @@ export interface SearchDestinationProps {
   origin: string;
 }
 
-export interface DepartDateProps {
-  origin: string;
+export interface DepartDateProps extends SearchDestinationProps {
   destination: string;
+}
+
+export interface TripListsProps extends DepartDateProps {
+  date: string;
 }
 
 export type RootStackParamList = {
@@ -15,6 +18,7 @@ export type RootStackParamList = {
   SearchOrigins: undefined;
   SearchDestinations: SearchDestinationProps;
   DepartDate: DepartDateProps;
+  TripsList: TripListsProps;
 };
 
 export type TripDetailsScreenProps = NativeStackScreenProps<
@@ -35,4 +39,9 @@ export type SearchDestinationsScreenProps = NativeStackScreenProps<
 export type DepartDateScreenProps = NativeStackScreenProps<
   RootStackParamList,
   'DepartDate'
+>;
+
+export type TripsListsScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  'TripsList'
 >;

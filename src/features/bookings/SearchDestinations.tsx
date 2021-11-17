@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import {
   Box,
   Heading,
@@ -25,6 +25,51 @@ import { Place } from '../../types';
 import { useGetPlacesQuery } from '../api/apiSlice';
 import PlaceCard from './PlaceCard';
 
+interface ListHeaderComponentProps {
+  search: string;
+  setSearch: Dispatch<SetStateAction<string>>;
+}
+
+const ListHeaderComponent = ({
+  search,
+  setSearch,
+}: ListHeaderComponentProps) => {
+  return (
+    <VStack space='2' px='4' mb='4'>
+      <Heading color='primary.500' size='xl' mb='6'>
+        What is your destination?
+      </Heading>
+
+      <InputGroup borderRightRadius={!search ? '4' : undefined} height='12'>
+        <Input
+          flex='1'
+          placeholder='Search destinations'
+          onChangeText={(v) => setSearch(v)}
+          value={search}
+        />
+        <InputRightAddon
+          p='0'
+          borderWidth={!search ? '0' : '1'}
+          borderColor='muted.500'
+          children={
+            !search ? null : (
+              <IconButton
+                disabled={!search}
+                borderRadius='0'
+                _icon={{
+                  color: 'white',
+                }}
+                icon={<Icon as={Entypo} name='cross' />}
+                onPress={() => setSearch('')}
+              />
+            )
+          }
+        />
+      </InputGroup>
+    </VStack>
+  );
+};
+
 const SearchDestinations = ({
   navigation,
   route,
@@ -37,7 +82,7 @@ const SearchDestinations = ({
     refetch,
     isFetching,
   } = useGetPlacesQuery({
-    q: search ? debouncedSearch : undefined,
+    q: search ? (debouncedSearch as string) : undefined,
     from: route.params.origin,
   });
 
@@ -62,51 +107,14 @@ const SearchDestinations = ({
 
   const ListFooterComponent = useCallback(() => <Box height='6' />, []);
 
-  const ListHeaderComponent = useCallback(
-    () => (
-      <VStack space='2' px='4' mb='4'>
-        <Heading color='primary.500' size='xl'>
-          What is your destination?
-        </Heading>
-
-        <InputGroup borderRightRadius={!search ? '4' : undefined}>
-          <Input
-            flex='1'
-            placeholder='Search destinations'
-            onChangeText={(v) => setSearch(v)}
-            value={search}
-          />
-          <InputRightAddon
-            p='0'
-            borderWidth={!search ? '0' : '1'}
-            borderColor='muted.500'
-            children={
-              !search ? (
-                ''
-              ) : (
-                <IconButton
-                  disabled={!search}
-                  borderRadius='0'
-                  _icon={{
-                    color: 'white',
-                  }}
-                  icon={<Icon as={Entypo} name='cross' />}
-                  onPress={() => setSearch('')}
-                />
-              )
-            }
-          />
-        </InputGroup>
-      </VStack>
-    ),
-    [search],
-  );
-
   return (
     <Box flex='1' _dark={{ bg: 'muted.900' }} _light={{ bg: 'muted.50' }}>
       <FlatList
         pt='2'
-        ListHeaderComponent={ListHeaderComponent}
+        keyboardShouldPersistTaps='handled'
+        ListHeaderComponent={
+          <ListHeaderComponent search={search} setSearch={setSearch} />
+        }
         refreshControl={
           <RefreshControl
             colors={[colors.primary[400], colors.primary[500]]}
