@@ -35,7 +35,13 @@ const ListHeaderComponent = ({
   setSearch,
 }: ListHeaderComponentProps) => {
   return (
-    <VStack space='2' px='4' mb='4'>
+    <VStack
+      space='2'
+      pt='2'
+      pb='4'
+      px='4'
+      _dark={{ bg: 'muted.900' }}
+      _light={{ bg: 'muted.50' }}>
       <Heading color='primary.500' size='xl' mb='6'>
         Where are you leaving from?
       </Heading>
@@ -103,7 +109,6 @@ const SearchOrigins = ({ navigation }: SearchOriginsScreenProps) => {
   return (
     <Box flex='1' _dark={{ bg: 'muted.900' }} _light={{ bg: 'muted.50' }}>
       <FlatList
-        pt='2'
         keyboardShouldPersistTaps='handled'
         ListHeaderComponent={
           <ListHeaderComponent search={search} setSearch={setSearch} />
@@ -119,6 +124,7 @@ const SearchOrigins = ({ navigation }: SearchOriginsScreenProps) => {
             onRefresh={() => refetch()}
           />
         }
+        stickyHeaderIndices={[0]}
         removeClippedSubviews
         onScrollBeginDrag={Keyboard.dismiss}
         keyExtractor={keyExtractor}
