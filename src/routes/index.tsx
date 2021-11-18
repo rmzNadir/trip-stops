@@ -39,13 +39,16 @@
 
 // export default Routes;
 
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/core';
 import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import {
   createStackNavigator,
   TransitionPresets,
 } from '@react-navigation/stack';
 import { useColorModeValue } from 'native-base';
+import { useColorMode, useTheme } from 'native-base';
+import { StatusBar, Platform } from 'react-native';
 import { DefaultTheme } from 'react-native-paper';
 import DepartDate from '../features/bookings/DepartDate';
 import SearchDestinations from '../features/bookings/SearchDestinations';
@@ -58,7 +61,22 @@ const Root = createStackNavigator<RootStackParamList>();
 
 const { Navigator, Screen } = Root;
 
-const SearchTrips = () => {
+const Routes = () => {
+  const { colors } = useTheme();
+  const { colorMode } = useColorMode();
+
+  useFocusEffect(
+    useCallback(() => {
+      StatusBar.setBarStyle(
+        colorMode === 'dark' ? 'light-content' : 'dark-content',
+      );
+      Platform.OS === 'android' &&
+        StatusBar.setBackgroundColor(
+          colorMode === 'dark' ? colors.muted[900] : colors.muted[50],
+        );
+    }, [colorMode, colors.muted]),
+  );
+
   const navigatorOptions = {
     ...TransitionPresets.SlideFromRightIOS,
     headerShown: false,
@@ -66,16 +84,22 @@ const SearchTrips = () => {
   };
 
   return (
+    <Navigator
+      screenOptions={navigatorOptions}
+      initialRouteName='SearchOrigins'>
+      <Screen name='SearchOrigins' component={SearchOrigins} />
+      <Screen name='SearchDestinations' component={SearchDestinations} />
+      <Screen name='DepartDate' component={DepartDate} />
+      <Screen name='TripsList' component={TripsList} />
+      <Screen name='TripDetails' component={TripDetails} />
+    </Navigator>
+  );
+};
+
+const SearchTrips = () => {
+  return (
     <NavigationContainer theme={useColorModeValue(DefaultTheme, DarkTheme)}>
-      <Navigator
-        screenOptions={navigatorOptions}
-        initialRouteName='SearchOrigins'>
-        <Screen name='SearchOrigins' component={SearchOrigins} />
-        <Screen name='SearchDestinations' component={SearchDestinations} />
-        <Screen name='DepartDate' component={DepartDate} />
-        <Screen name='TripsList' component={TripsList} />
-        <Screen name='TripDetails' component={TripDetails} />
-      </Navigator>
+      <Routes />
     </NavigationContainer>
   );
 };
