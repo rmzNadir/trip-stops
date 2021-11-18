@@ -1,4 +1,5 @@
 import { TripListsProps } from './index';
+import { TripDetailsProps } from './Routes';
 
 export interface Place {
   id: number;
@@ -66,7 +67,7 @@ export interface Search {
   destination_id: string;
   international: boolean;
   type_of_transport: TypeOfTransport;
-  created_at: Date;
+  created_at: string;
 }
 
 export interface PaymentPlans {
@@ -141,10 +142,6 @@ export interface FareServices {}
 export interface InnerCityConnections {}
 
 export interface ProviderDiscount {
-  amount: number;
-}
-
-export interface ProviderDiscount2 {
   id: string;
   name: string;
   priority?: number;
@@ -162,7 +159,7 @@ export interface Pricing {
   discount_availability?: boolean;
   provider_discount: ProviderDiscount;
   total_before_discount: number;
-  provider_discounts: ProviderDiscount2[];
+  provider_discounts: ProviderDiscount[];
 }
 
 export interface ProviderDiscount3 {
@@ -199,8 +196,8 @@ export interface PassengerType {
 
 export interface Stop {
   terminal: string;
-  departure: Date;
-  arrival: Date;
+  departure: string;
+  arrival: string;
 }
 
 export interface Path {
@@ -208,8 +205,8 @@ export interface Path {
   provider: string;
   origin: string;
   destination: string;
-  departure: Date;
-  arrival: Date;
+  departure: string;
+  arrival: string;
   stops: Stop[];
 }
 
@@ -246,8 +243,8 @@ export interface Trip {
   destination_code: string;
   pricing: Pricing;
   round_trip_pricing: RoundTripPricing;
-  departure: Date;
-  arrival: Date;
+  departure: string;
+  arrival: string;
   availability: number;
   capacity: number;
   service: string;
@@ -280,8 +277,8 @@ export interface TripsInfo {
   origin_id: number;
   destination_id: number;
   departs: string;
-  created_at: Date;
-  finished_at: Date;
+  created_at: string;
+  finished_at: string;
   carriers: Carriers;
   airports: Airports;
   fare_services: FareServices;
@@ -290,4 +287,37 @@ export interface TripsInfo {
   inner_city_connections: InnerCityConnections;
   transport_type: string;
   trips: Trip[];
+}
+
+export type TripDetailsRequestParams = TripDetailsProps['trip_id'];
+
+export interface TripDetailsSearch {
+  id: number;
+  state: string;
+  poll_to: string;
+  error_code?: number;
+  error_message?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GetTripDetailsParams {
+  trip_id: TripDetailsProps['trip_id'];
+  details_request_id: number;
+}
+
+export interface TripDetails {
+  id: number;
+  state: string;
+  poll_to?: string;
+  error_code?: number;
+  error_message?: string;
+  created_at: string;
+  updated_at: string;
+  trip: Trip;
+  terminals: Record<string, Terminal>;
+  lines: Record<string, Line>;
+  cities: Record<string, City>;
+  bus?: any;
+  diagram_type: string;
 }

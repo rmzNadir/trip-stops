@@ -1,23 +1,92 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { parseISO } from 'date-fns';
+import format from 'date-fns/format';
 import {
   Box,
-  Text,
   Heading,
   VStack,
   HStack,
   IconButton,
   useTheme,
   useColorModeValue,
-  Divider,
 } from 'native-base';
-import { Pressable, StyleSheet } from 'react-native';
+import { RefreshControl, StyleSheet } from 'react-native';
 import Timeline from 'react-native-timeline-flatlist';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { TripDetailsScreenProps } from '../../types';
+import {
+  useLazyGetTripDetailsQuery,
+  useSearchTripDetailsMutation,
+} from '../api/apiSlice';
 
-const TripDetails = ({ navigation }: TripDetailsScreenProps) => {
+const TripDetails = ({ navigation, route }: TripDetailsScreenProps) => {
   const canGoback = navigation.canGoBack();
   const { colors } = useTheme();
+  const [searchTripsDetails, { data: searchInfo }] =
+    useSearchTripDetailsMutation();
+  const [interval, setInterval] = useState(0);
+  const [getTripDetails, { data: tripDetails }] = useLazyGetTripDetailsQuery({
+    pollingInterval: interval,
+  });
+
+  useEffect(() => {
+    searchTripsDetails(route.params.trip_id);
+  }, [searchTripsDetails, route.params.trip_id]);
+
+  useEffect(() => {
+    // Refetch every 1s unless tripDetails query is finished
+    if (searchInfo) {
+      !interval && setInterval(1000);
+      if (tripDetails && tripDetails.state === 'finished') {
+        setInterval(0);
+      } else {
+        getTripDetails({
+          trip_id: route.params.trip_id,
+          details_request_id: searchInfo.id,
+        });
+      }
+    }
+  }, [getTripDetails, searchInfo, tripDetails, interval, route.params.trip_id]);
+
+  const pathData = useMemo(() => {
+    if (tripDetails && tripDetails.trip) {
+      const path = tripDetails.trip.path[0];
+
+      const result = [
+        {
+          time: format(parseISO(path.departure), 'h:mm a'),
+          title: path.origin,
+          description: 'Departure from origin',
+        },
+      ];
+
+      for (const stopover of path.stops) {
+        const arrival = {
+          time: format(parseISO(stopover.arrival), 'h:mm a'),
+          title: stopover.terminal,
+          description: 'Stopover arrival',
+        };
+        const departure = {
+          time: format(parseISO(stopover.departure), 'h:mm a'),
+          title: stopover.terminal,
+          description: 'Stopover departure',
+        };
+
+        result.push(arrival);
+        result.push(departure);
+      }
+
+      result.push({
+        time: format(parseISO(path.arrival), 'h:mm a'),
+        title: path.destination,
+        description: 'Arrival to destination',
+      });
+
+      return result;
+    }
+
+    return [];
+  }, [tripDetails]);
 
   return (
     <Box
@@ -46,12 +115,45 @@ const TripDetails = ({ navigation }: TripDetailsScreenProps) => {
               Trip details
             </Heading>
           </Box>
+          <Box>
+            <IconButton
+              onPress={() =>
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'SearchOrigins' }],
+                })
+              }
+              variant='solid'
+              size='sm'
+              _icon={{
+                as: AntDesign,
+                name: 'home',
+              }}
+            />
+          </Box>
         </HStack>
 
-        <Divider bg='primary.500' />
-
         <Timeline
-          timeContainerStyle={styles.timeContainer}
+          // @ts-expect-error
+          options={{
+            refreshControl: (
+              <RefreshControl
+                colors={[colors.primary[400], colors.primary[500]]}
+                progressBackgroundColor={useColorModeValue(
+                  colors.muted[50],
+                  colors.muted[800],
+                )}
+                refreshing={tripDetails?.state !== 'finished'}
+                onRefresh={() =>
+                  searchInfo?.id &&
+                  getTripDetails({
+                    trip_id: route.params.trip_id,
+                    details_request_id: searchInfo.id,
+                  })
+                }
+              />
+            ),
+          }}
           circleColor={colors.primary[300]}
           lineColor={colors.primary[500]}
           innerCircle='dot'
@@ -76,59 +178,12 @@ const TripDetails = ({ navigation }: TripDetailsScreenProps) => {
             color: useColorModeValue(colors.darkText, colors.lightText),
           }}
           descriptionStyle={{
-            color: useColorModeValue(colors.light[800], colors.light[300]),
+            color: useColorModeValue(colors.light[800], colors.light[200]),
           }}
-          data={[
-            {
-              time: '09:00',
-              title: 'Event 1',
-              description: 'Event 1 Description',
-            },
-            {
-              time: '10:45',
-              title: 'Event 2',
-              description: 'Event 2 Description',
-            },
-            {
-              time: '12:00',
-              title: 'Event 3',
-              description: 'Event 3 Description',
-            },
-            {
-              time: '14:00',
-              title: 'Event 4',
-              description: 'Event 4 Description',
-            },
-            {
-              time: '16:30',
-              title: 'Event 5',
-              description: 'Event 5 Description',
-            },
-          ]}
+          data={pathData}
           listViewContainerStyle={styles.timeline}
           columnFormat='two-column'
-          separator={false}
         />
-      </VStack>
-
-      <VStack mt='6' space='2' alignItems='center'>
-        {/* <ToggleDarkMode /> */}
-        <Pressable
-          onPress={() =>
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'SearchOrigins' }],
-            })
-          }>
-          <Text
-            underline
-            _dark={{ color: 'muted.200' }}
-            _light={{
-              color: 'muted.600',
-            }}>
-            Back to start
-          </Text>
-        </Pressable>
       </VStack>
     </Box>
   );
@@ -136,22 +191,19 @@ const TripDetails = ({ navigation }: TripDetailsScreenProps) => {
 
 export default TripDetails;
 
-const offsetValue = 6;
 const borderRadius = 10;
 
 const styles = StyleSheet.create({
-  timeline: { paddingTop: offsetValue },
-  timeContainer: {
-    marginTop: -offsetValue,
-  },
+  timeline: { paddingTop: 6 },
+
   time: {
     textAlign: 'center',
     padding: 5,
     borderRadius: borderRadius,
+    fontWeight: 'bold',
   },
   detailContainer: {
     borderWidth: 1,
-    marginTop: -offsetValue,
     marginBottom: 30,
     paddingHorizontal: 10,
     borderRadius: borderRadius,

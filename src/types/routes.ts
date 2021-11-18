@@ -24,8 +24,12 @@ export interface TripListsProps extends DepartDateProps {
   date: string;
 }
 
+export interface TripDetailsProps {
+  trip_id: string;
+}
+
 export type RootStackParamList = {
-  TripDetails: undefined;
+  TripDetails: TripDetailsProps;
   SearchOrigins: undefined;
   SearchDestinations: SearchDestinationProps;
   DepartDate: DepartDateProps;

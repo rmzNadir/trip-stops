@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import {
   Box,
   Heading,
@@ -63,14 +63,14 @@ const TripCard = memo(({ item, lines }: TripCardProps) => {
           <HStack space='2' justifyContent='space-between'>
             <VStack space='1'>
               <Text color='primary.400'>Departure</Text>
-              <Text>{format(new Date(departure), 'h:mm a')}</Text>
+              <Text>{format(parseISO(departure), 'h:mm a')}</Text>
             </VStack>
             <Center>
               <Icon as={AntDesign} name='calendar' color='primary.500' />
             </Center>
             <VStack space='1'>
               <Text color='primary.400'>Arrival</Text>
-              <Text>{format(new Date(arrival), 'h:mm a')}</Text>
+              <Text>{format(parseISO(arrival), 'h:mm a')}</Text>
             </VStack>
           </HStack>
         </VStack>

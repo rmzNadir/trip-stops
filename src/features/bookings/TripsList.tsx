@@ -109,7 +109,10 @@ const TripsList = ({ navigation, route }: TripsListsScreenProps) => {
 
   const renderItem = useCallback(
     (info: ListRenderItemInfo<Trip>) => (
-      <Pressable onPress={() => navigation.navigate('TripDetails')}>
+      <Pressable
+        onPress={() =>
+          navigation.navigate('TripDetails', { trip_id: info.item.id })
+        }>
         <TripCard {...info} lines={lines} />
       </Pressable>
     ),
