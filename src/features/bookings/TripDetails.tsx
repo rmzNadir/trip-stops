@@ -11,6 +11,7 @@ import {
   useColorModeValue,
   Icon,
   Text,
+  Spinner,
 } from 'native-base';
 import { RefreshControl, StyleSheet } from 'react-native';
 import Timeline from 'react-native-timeline-flatlist';
@@ -147,57 +148,60 @@ const TripDetails = ({ navigation, route }: TripDetailsScreenProps) => {
           </VStack>
         </HStack>
 
-        <Timeline
-          // @ts-expect-error
-          options={{
-            refreshControl: (
-              <RefreshControl
-                colors={[colors.primary[400], colors.primary[500]]}
-                progressBackgroundColor={useColorModeValue(
+        {tripDetails?.state !== 'finished' ? (
+          <Spinner accessibilityLabel='Loading itinerary' size='lg' />
+        ) : (
+          <Timeline
+            // options={{
+            //   refreshControl: (
+            //     <RefreshControl
+            //       colors={[colors.primary[400], colors.primary[500]]}
+            //       progressBackgroundColor={useColorModeValue(
+            //         colors.muted[50],
+            //         colors.muted[800],
+            //       )}
+            //       refreshing={tripDetails?.state !== 'finished'}
+            //       onRefresh={() =>
+            //         searchInfo?.id &&
+            //         getTripDetails({
+            //           trip_id: route.params.trip_id,
+            //           details_request_id: searchInfo.id,
+            //         })
+            //       }
+            //     />
+            //   ),
+            // }}
+            circleColor={colors.primary[300]}
+            lineColor={colors.primary[500]}
+            innerCircle='dot'
+            detailContainerStyle={[
+              styles.detailContainer,
+              {
+                backgroundColor: useColorModeValue(
                   colors.muted[50],
+                  colors.muted[700],
+                ),
+                borderColor: useColorModeValue(
+                  colors.muted[200],
                   colors.muted[800],
-                )}
-                refreshing={tripDetails?.state !== 'finished'}
-                onRefresh={() =>
-                  searchInfo?.id &&
-                  getTripDetails({
-                    trip_id: route.params.trip_id,
-                    details_request_id: searchInfo.id,
-                  })
-                }
-              />
-            ),
-          }}
-          circleColor={colors.primary[300]}
-          lineColor={colors.primary[500]}
-          innerCircle='dot'
-          detailContainerStyle={[
-            styles.detailContainer,
-            {
-              backgroundColor: useColorModeValue(
-                colors.muted[50],
-                colors.muted[700],
-              ),
-              borderColor: useColorModeValue(
-                colors.muted[200],
-                colors.muted[800],
-              ),
-            },
-          ]}
-          timeStyle={[
-            styles.time,
-            { color: colors.white, backgroundColor: colors.primary[500] },
-          ]}
-          titleStyle={{
-            color: useColorModeValue(colors.darkText, colors.lightText),
-          }}
-          descriptionStyle={{
-            color: useColorModeValue(colors.light[800], colors.light[200]),
-          }}
-          data={pathData}
-          listViewContainerStyle={styles.timeline}
-          columnFormat='two-column'
-        />
+                ),
+              },
+            ]}
+            timeStyle={[
+              styles.time,
+              { color: colors.white, backgroundColor: colors.primary[500] },
+            ]}
+            titleStyle={{
+              color: useColorModeValue(colors.darkText, colors.lightText),
+            }}
+            descriptionStyle={{
+              color: useColorModeValue(colors.light[800], colors.light[200]),
+            }}
+            data={pathData}
+            listViewContainerStyle={styles.timeline}
+            columnFormat='two-column'
+          />
+        )}
       </VStack>
     </Box>
   );
