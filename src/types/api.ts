@@ -258,7 +258,7 @@ export interface Trip {
   product_id: string;
   transport_type: string;
   duration: number;
-  path: Path[];
+  path?: Path[];
   has_route_details: boolean;
   variable_departure_time: boolean;
   open_ticket: boolean;
@@ -314,7 +314,7 @@ export interface TripDetails {
   error_message?: string;
   created_at: string;
   updated_at: string;
-  trip: Trip;
+  trip?: Trip;
   terminals: Record<string, Terminal>;
   lines: Record<string, Line>;
   cities: Record<string, City>;

@@ -9,10 +9,13 @@ import {
   IconButton,
   useTheme,
   useColorModeValue,
+  Icon,
+  Text,
 } from 'native-base';
 import { RefreshControl, StyleSheet } from 'react-native';
 import Timeline from 'react-native-timeline-flatlist';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { TripDetailsScreenProps } from '../../types';
 import {
   useLazyGetTripDetailsQuery,
@@ -49,7 +52,7 @@ const TripDetails = ({ navigation, route }: TripDetailsScreenProps) => {
   }, [getTripDetails, searchInfo, tripDetails, interval, route.params.trip_id]);
 
   const pathData = useMemo(() => {
-    if (tripDetails && tripDetails.trip) {
+    if (tripDetails && tripDetails.trip?.path?.length) {
       const path = tripDetails.trip.path[0];
 
       const result = [
@@ -89,13 +92,8 @@ const TripDetails = ({ navigation, route }: TripDetailsScreenProps) => {
   }, [tripDetails]);
 
   return (
-    <Box
-      flex={1}
-      _dark={{ bg: 'muted.900' }}
-      _light={{ bg: 'muted.50' }}
-      p='4'
-      justifyContent='space-between'>
-      <VStack space='4' flex='1'>
+    <Box flex={1} _dark={{ bg: 'muted.900' }} _light={{ bg: 'muted.50' }} p='4'>
+      <VStack space='6' flex='1'>
         <HStack space='2' justifyContent='space-between' alignItems='center'>
           {canGoback && (
             <Box>
@@ -131,6 +129,22 @@ const TripDetails = ({ navigation, route }: TripDetailsScreenProps) => {
               }}
             />
           </Box>
+        </HStack>
+
+        {/* This info doesn't seem to come from the api? */}
+        <HStack space='2' justifyContent='space-around'>
+          <VStack space='1' alignItems='center'>
+            <Icon as={FontAwesome5} name='restroom' minW='8' size='sm' />
+            <Text>Restroom</Text>
+          </VStack>
+          <VStack space='1' alignItems='center'>
+            <Icon as={FontAwesome5} name='tv' minW='8' size='sm' />
+            <Text>Entertainment</Text>
+          </VStack>
+          <VStack space='1' alignItems='center'>
+            <Icon as={FontAwesome5} name='ticket-alt' minW='8' size='sm' />
+            <Text>E-Tickets</Text>
+          </VStack>
         </HStack>
 
         <Timeline
