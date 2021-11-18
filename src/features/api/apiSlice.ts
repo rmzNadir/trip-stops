@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { isBefore, parseISO } from 'date-fns';
 import {
   GetPlacesParams,
   Place,
@@ -41,6 +42,25 @@ export const apiSlice = createApi({
     getTrips: builder.query<TripsInfo, number>({
       query: (id) => `search/${id}?type=bus`,
       providesTags: (_result, _error, _arg) => [{ type: 'Trips', id: 'LIST' }],
+      transformResponse: (responseData: TripsInfo) => {
+        // Filter trips that already left / or are "open"
+        const filteredTrips = responseData.trips.filter((trip) => {
+          const today = new Date();
+
+          return (
+            !isBefore(parseISO(trip.departure), today) &&
+            !trip.id.includes('open-trip')
+          );
+        });
+
+        // Order trips based on departure time
+        const orderedTrips = filteredTrips.sort(
+          (a, b) =>
+            parseISO(a.departure).getTime() - parseISO(b.departure).getTime(),
+        );
+
+        return { ...responseData, trips: orderedTrips } as TripsInfo;
+      },
     }),
     getTripDetails: builder.query<TripDetails, GetTripDetailsParams>({
       query: ({ trip_id, details_request_id }) =>
